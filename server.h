@@ -17,6 +17,7 @@ signals:
 // listen
 public slots:
     void run();
+    void onGateOpened(const QString &message);
 
 private:
     int server_socket;

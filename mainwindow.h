@@ -16,6 +16,9 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+signals:
+    void gateOpened(const QString &message);
+
 public slots:
     void on_gateButton_clicked();
     void onPayloadReceived(const QString &message);

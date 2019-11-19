@@ -2,6 +2,7 @@
 
 #include <QApplication>
 #include <QThread>
+#include <regex>
 #include "server.h"
 
 int main(int argc, char *argv[])
@@ -14,6 +15,7 @@ int main(int argc, char *argv[])
 //    server.connect(&w, &MainWindow::onPayloadReceived, &Proxy::payloadReceived );
 //    connect(&server, &Proxy::payloadReceived, this, &MainWindow::onPayloadReceived);
     QObject::connect(&server, &Proxy::payloadReceived, &w, &MainWindow::onPayloadReceived);
+    QObject::connect(&w, &MainWindow::gateOpened, &server, &Proxy::onGateOpened);
 //            connect(&server, &Proxy::payloadReceived, this, &MainWindow::onPayloadReceived);
     server.moveToThread(&proxyServer);
 //    connect(childrenWatcherThread, SIGNAL(started()),

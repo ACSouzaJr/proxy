@@ -81,4 +81,10 @@ void Proxy::onGateOpened(const QString &message)
     std::string request = HtmlUtils::formatRequest(message.toStdString(), '\n', "\r\n");
     std::cout << request;
     // Extract host
+    
+    // connect to server
+    
+    // receive response from server
+    
+    // emit response received
 }

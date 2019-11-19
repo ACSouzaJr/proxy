@@ -23,7 +23,9 @@ void MainWindow::on_gateButton_clicked()
     ui->gateButton->setEnabled(false);
     ui->clientRequest->setEnabled(false);
     QString text =  ui->clientRequest->toPlainText();
+
     qDebug() << text;
+    emit gateOpened(text);
 }
 
 void MainWindow::onPayloadReceived(const QString &message)
