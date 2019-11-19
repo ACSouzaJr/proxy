@@ -47,6 +47,9 @@
           <bool>true</bool>
          </property>
          <widget class="QTextEdit" name="clientRequest">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="geometry">
            <rect>
             <x>10</x>
@@ -68,7 +71,7 @@
            </size>
           </property>
           <property name="readOnly">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
          </widget>
         </widget>
@@ -139,6 +142,9 @@
        </item>
        <item>
         <widget class="QPushButton" name="gateButton">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>Start listening</string>
          </property>

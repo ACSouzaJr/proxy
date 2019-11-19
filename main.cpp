@@ -13,12 +13,12 @@ int main(int argc, char *argv[])
 
 //    server.connect(&w, &MainWindow::onPayloadReceived, &Proxy::payloadReceived );
 //    connect(&server, &Proxy::payloadReceived, this, &MainWindow::onPayloadReceived);
-    w.connect(&server, &Proxy::payloadReceived, &w, &MainWindow::onPayloadReceived);
+    QObject::connect(&server, &Proxy::payloadReceived, &w, &MainWindow::onPayloadReceived);
 //            connect(&server, &Proxy::payloadReceived, this, &MainWindow::onPayloadReceived);
     server.moveToThread(&proxyServer);
 //    connect(childrenWatcherThread, SIGNAL(started()),
 //                childrenWatcher, SLOT(watch()));
-    proxyServer.connect(&server, &Proxy::run, &QThread::started);
+    QObject::connect(&proxyServer, &QThread::started, &server, &Proxy::run);
     proxyServer.start();
 
     w.show();
