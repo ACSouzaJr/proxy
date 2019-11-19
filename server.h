@@ -8,7 +8,6 @@ class Proxy : public QObject
     Q_OBJECT
 public:
     explicit Proxy(QObject *parent = nullptr);
-    void run();
 
 // emit
 signals:
@@ -16,6 +15,8 @@ signals:
 
 // listen
 public slots:
+    void run();
+
 };
 
 #endif // SERVER_H

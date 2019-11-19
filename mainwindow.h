@@ -16,12 +16,11 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-private slots:
+public slots:
     void on_gateButton_clicked();
     void onPayloadReceived(const QString &message);
 
 private:
     Ui::MainWindow *ui;
-    Proxy server;
 };
 #endif // MAINWINDOW_H

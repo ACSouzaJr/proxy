@@ -7,7 +7,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    connect(&server, &Proxy::payloadReceived, this, &MainWindow::onPayloadReceived);
+//    connect(&server, &Proxy::payloadReceived, this, &MainWindow::onPayloadReceived);
 }
 
 MainWindow::~MainWindow()
@@ -20,10 +20,12 @@ void MainWindow::on_gateButton_clicked()
 {
 //    QString string = "joaozinho gosta de azul";
 //    ui->clientRequest->setPlainText(string);
-    server.run();
 }
 
 void MainWindow::onPayloadReceived(const QString &message)
 {
     ui->clientRequest->setPlainText(message);
+//  Qstream text =  ui->clientRequest->toPlainText();
+//    ui->clientRequest->setText(string);
+
 }
