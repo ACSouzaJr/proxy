@@ -78,7 +78,18 @@ void Proxy::createServerSocket()
 
 void Proxy::onGateOpened(const QString &message)
 {
-    std::string request = HtmlUtils::formatRequest(message.toStdString(), '\n', "\r\n");
-    std::cout << request;
+    string request = message.toStdString();
     // Extract host
+    string host = HtmlUtils::extractHost(request);
+
+    // format request
+    std::string requestFormatted = HtmlUtils::formatRequest(request, '\n', "\r\n");
+    std::cout << host;
+    // connect to server
+
+    // send request to server
+
+    // receive response from server
+
+    // emit response received
 }

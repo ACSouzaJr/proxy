@@ -3,12 +3,27 @@
 #include <vector>
 #include <bits/stdc++.h>
 #include <QDebug>
+#include <regex>
 
 using namespace std;
 
 HtmlUtils::HtmlUtils()
 {
 
+}
+
+string HtmlUtils::extractHost(string header)
+{
+    std::regex r( R"rgx((?:\w+\.)+\w+)rgx" );
+
+    std::smatch m;
+    std::regex_search(header, m, r);
+
+        for (auto v : m)
+            std::cout << v << std::endl;
+        return m.str(1);
+
+//    return "Erro";
 }
 
 string HtmlUtils::formatRequest(string header, char splitDelimiter, string joinDelimiter)
