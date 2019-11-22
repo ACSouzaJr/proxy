@@ -7,7 +7,6 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-//    connect(&server, &Proxy::payloadReceived, this, &MainWindow::onPayloadReceived);
 }
 
 MainWindow::~MainWindow()
@@ -46,4 +45,14 @@ void MainWindow::onPayloadReceived(const QString &message, serverStatus status)
 //  Qstream text =  ui->clientRequest->toPlainText();
 //    ui->clientRequest->setText(string);
 
+}
+
+void MainWindow::on_responseButton_clicked()
+{
+    ui->responseButton->setEnabled(false);
+    ui->serverResponse->setEnabled(false);
+    QString text =  ui->serverResponse->toPlainText();
+
+//    qDebug() << text;
+    emit responseFromServer(text);
 }

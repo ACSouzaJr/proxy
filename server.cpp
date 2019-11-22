@@ -1,4 +1,4 @@
-#include "server.h"
+﻿#include "server.h"
 #include <sys/socket.h>
 #include <unistd.h>
 #include <cstdio>
@@ -90,9 +90,11 @@ void Proxy::onGateOpened(const QString &message)
     // format request
     std::string requestFormatted = HtmlUtils::formatRequest(request, '\n', "\r\n");
 //    std::cout << host;
-    qDebug() << QString::fromUtf8(host.c_str());
+    qDebug("%s", host.c_str());
+
     // connect to server
     createClientSocket(host);
+
     // send request to server
 //    HtmlUtils::replaceInHeader(requestFormatted, "keep-alive", "close");
     // format
@@ -101,7 +103,9 @@ void Proxy::onGateOpened(const QString &message)
     // std::cout << found;
     requestFormatted.replace(found, str2.length(), "close");
     // end format
+
     send(client_socket, requestFormatted.c_str(), strlen(requestFormatted.c_str()), 0);
+
     // receive response from server
     std::stringstream buffer;
     char cur;
@@ -109,10 +113,28 @@ void Proxy::onGateOpened(const QString &message)
     while (recv(client_socket, &cur, 1, 0) > 0){
         buffer << cur;
     }
+
+    // close connection
+//    close(client_socket);
+
     // emit response received
     QString responsePayload = QString::fromUtf8(buffer.str().c_str());
 
     emit payloadReceived(responsePayload, responseReceived);
+}
+
+void Proxy::onResponseFromServer(const QString &message)
+{
+    string server_response = message.toStdString();
+    // Format request
+
+    qDebug("%s", server_response.c_str());
+    qDebug() << "Sending response to client \n";
+
+    send(server_socket, server_response.c_str() , strlen(server_response.c_str()), 0);
+    close(server_socket);
+
+    qDebug() << "response sent \n";
 }
 
 void Proxy::createClientSocket(string hostname)

@@ -19,13 +19,14 @@ public:
 
 signals:
     void gateOpened(const QString &message);
+    void responseFromServer(const QString &message);
 
 public slots:
-    void on_requestButton_clicked();
     void onPayloadReceived(const QString &message, serverStatus);
 
 private slots:
-
+    void on_requestButton_clicked();
+    void on_responseButton_clicked();
 
 private:
     Ui::MainWindow *ui;
