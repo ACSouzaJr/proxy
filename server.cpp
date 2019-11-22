@@ -4,9 +4,14 @@
 #include <cstdio>
 #include <cstdlib>
 #include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <netinet/in.h>
 #include <QDebug>
 #include "htmlutils.h"
 #include <iostream>
+#include <sstream>
+#include "serverstatus.h"
 
 Proxy::Proxy(QObject *parent, uint16_t port) : QObject(parent)
 {
@@ -25,7 +30,7 @@ void Proxy::run()
 
     QString payload = QString::fromUtf8(client_request);
     //    QString string = "joaozinho gosta de azul";
-    emit payloadReceived(payload);
+    emit payloadReceived(payload, requestReceived);
 }
 
 void Proxy::createServerSocket()
@@ -84,12 +89,73 @@ void Proxy::onGateOpened(const QString &message)
 
     // format request
     std::string requestFormatted = HtmlUtils::formatRequest(request, '\n', "\r\n");
-    std::cout << host;
+//    std::cout << host;
+    qDebug() << QString::fromUtf8(host.c_str());
     // connect to server
-
+    createClientSocket(host);
     // send request to server
-
+//    HtmlUtils::replaceInHeader(requestFormatted, "keep-alive", "close");
+    // format
+    std::string str2 = "keep-alive";
+    std::size_t found = requestFormatted.find(str2);
+    // std::cout << found;
+    requestFormatted.replace(found, str2.length(), "close");
+    // end format
+    send(client_socket, requestFormatted.c_str(), strlen(requestFormatted.c_str()), 0);
     // receive response from server
+    std::stringstream buffer;
+    char cur;
 
+    while (recv(client_socket, &cur, 1, 0) > 0){
+        buffer << cur;
+    }
     // emit response received
+    QString responsePayload = QString::fromUtf8(buffer.str().c_str());
+
+    emit payloadReceived(responsePayload, responseReceived);
+}
+
+void Proxy::createClientSocket(string hostname)
+{
+    struct sockaddr_in serv_addr;
+    struct hostent *host_entry;    /* server host name information        */
+    char *IPbuffer;
+
+    if ((client_socket = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+        {
+            perror("\n Socket creation error \n");
+            exit(EXIT_FAILURE);
+        }
+
+        memset(&serv_addr, '0', sizeof(serv_addr));
+
+        serv_addr.sin_family = AF_INET;
+        serv_addr.sin_port = htons(80);
+
+        host_entry = gethostbyname(hostname.c_str());
+        if (host_entry == (struct hostent *) 0)
+        {
+            perror("Gethostbyname failed\n");
+            exit(EXIT_FAILURE);
+        }
+
+
+        IPbuffer = inet_ntoa(*((struct in_addr*) host_entry->h_addr_list[0]));
+//        std::cout << IPbuffer;
+
+        // Convert IPv4 and IPv6 addresses from text to binary form
+        if (inet_pton(AF_INET, IPbuffer, &serv_addr.sin_addr) <= 0)
+        {
+            perror("\nInvalid address/ Address not supported \n");
+            exit(EXIT_FAILURE);
+        }
+
+        qDebug() << "connecting to server \n";
+        if (::connect(client_socket, (struct sockaddr*) & serv_addr, sizeof(serv_addr)) < 0)
+        {
+            perror("\nConnection Failed \n");
+            exit(EXIT_FAILURE);
+        }
+
+        qDebug() << "connected to server successfully\n";
 }

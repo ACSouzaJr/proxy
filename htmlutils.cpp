@@ -1,6 +1,5 @@
 #include "htmlutils.h"
 #include <iostream>
-#include <vector>
 #include <bits/stdc++.h>
 #include <QDebug>
 #include <regex>
@@ -12,18 +11,29 @@ HtmlUtils::HtmlUtils()
 
 }
 
+void replaceInHeader(string header, const string oldstr, const string newstr)
+{
+//    std::string str2 = "keep-alive";
+    std::size_t found = header.find(oldstr);
+    // std::cout << found;
+    header.replace(found, oldstr.length(), newstr); // close
+}
+
 string HtmlUtils::extractHost(string header)
 {
     std::regex r( R"rgx((?:\w+\.)+\w+)rgx" );
 
     std::smatch m;
-    std::regex_search(header, m, r);
+    if (std::regex_search(header, m, r))
+    {
+//                for (auto v : m)
+//                    std::cout << v << std::endl;
+                return m.str(0);
+    }
 
-        for (auto v : m)
-            std::cout << v << std::endl;
-        return m.str(1);
 
-//    return "Erro";
+    qDebug() << "Erro ao encontrar host\n";
+    return "";
 }
 
 string HtmlUtils::formatRequest(string header, char splitDelimiter, string joinDelimiter)

@@ -24,7 +24,8 @@ SOURCES += \
 HEADERS += \
     htmlutils.h \
     mainwindow.h \
-    server.h
+    server.h \
+    serverstatus.h
 
 FORMS += \
     mainwindow.ui

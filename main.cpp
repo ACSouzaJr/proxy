@@ -4,6 +4,7 @@
 #include <QThread>
 #include <regex>
 #include "server.h"
+#include "serverstatus.h"
 
 int main(int argc, char *argv[])
 {
@@ -11,6 +12,7 @@ int main(int argc, char *argv[])
     MainWindow w;
     Proxy server;
     QThread proxyServer;
+    qRegisterMetaType<serverStatus>();
 
 //    server.connect(&w, &MainWindow::onPayloadReceived, &Proxy::payloadReceived );
 //    connect(&server, &Proxy::payloadReceived, this, &MainWindow::onPayloadReceived);
