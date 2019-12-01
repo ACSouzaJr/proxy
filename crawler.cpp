@@ -111,23 +111,35 @@ bool existsInVector(vector<string> v, string elem)
   return std::find(v.begin(), v.end(), elem) != v.end();
 }
 
-int main(int argc, char const *argv[])
-{
-  // Socket* sock = new Socket(PORT);
-  // sock->create();
-  // sock->readRequest();
-  // sock->createClient();
-  // sock->receiveResponse();
-  // sock->sendRequest();
-
-  queue<string> hostQueue;
-  hostQueue.push("http://www.sitepx.com/");
-  vector<string> accessed_links;
-  string url;
+// intera pelo vetor de urls
+// criar um arquivo com o nome da url
+// Fazer download do site
+// substituir referencias <a />
+// escrever no arquivo o conteudo do site
+void dumper(vector<string> accessed_links) {
   string host = "www.sitepx.com";
 
-  do
-  {
+  for(auto link = 0; link < accessed_links.size(); link++) {
+    size_t pos = accessed_links[link].find_last_of("/") + 1;
+    string file_name = accessed_links[link].substr(pos);
+    std::ofstream outfile (file_name);
+    
+    string payload = download_html(accessed_links[link], host);
+    size_t html_tag = payload.find("<!DOCTYPE html>");
+    outfile << payload.substr(html_tag) << std::endl;
+    outfile.close();
+  }
+  return;
+}
+
+vector<string> crawling_in_my_skin(string host){
+  queue<string> hostQueue;
+  string root = "http://" + host + "/";
+  hostQueue.push(root);
+  vector<string> accessed_links;
+  string url;
+
+  do {
     do {  
       url = hostQueue.front();
       hostQueue.pop();
@@ -171,5 +183,11 @@ int main(int argc, char const *argv[])
               accessed_links.end(),
               std::ostream_iterator<std::string>(std::cout, "\n"));
 
-  return 0;
+  return accessed_links;
+}
+
+int main(int argc, char const *argv[])
+{
+
+
 }

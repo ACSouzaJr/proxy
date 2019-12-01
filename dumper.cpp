@@ -131,8 +131,6 @@ int main(int argc, char const *argv[])
     outfile << payload.substr(html_tag) << std::endl;
     outfile.close();
   }
-
-
   
   // intera pelo vetor de urls
   // criar um arquivo com o nome da url
