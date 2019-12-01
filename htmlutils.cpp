@@ -4,19 +4,21 @@
 #include <QDebug>
 #include <regex>
 
-using namespace std;
-
 HtmlUtils::HtmlUtils()
 {
 
 }
 
-void replaceInHeader(string header, const string oldstr, const string newstr)
+string HtmlUtils::replaceInHeader(string header, string name,string value)
 {
-//    std::string str2 = "keep-alive";
-    std::size_t found = header.find(oldstr);
-    // std::cout << found;
-    header.replace(found, oldstr.length(), newstr); // close
+    std::string finalReq(header);
+    int position_header;
+    if((position_header = header.find(name)) != std::string::npos) {
+        int position_value_start = header.find_first_of(":", position_header);
+        int position_value_end = header.find_first_of("\r", position_header);
+        finalReq.replace(position_value_start, (position_value_end-position_value_start), ": " + value );
+    }
+    return finalReq;
 }
 
 string HtmlUtils::extractHost(string header)

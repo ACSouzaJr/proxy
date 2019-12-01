@@ -90,19 +90,21 @@ void Proxy::onGateOpened(const QString &message)
     // format request
     std::string requestFormatted = HtmlUtils::formatRequest(request, '\n', "\r\n");
 //    std::cout << host;
-    qDebug("%s", host.c_str());
+    qDebug("\n\t%s\n", host.c_str());
 
     // connect to server
     createClientSocket(host);
 
     // send request to server
 //    HtmlUtils::replaceInHeader(requestFormatted, "keep-alive", "close");
-    // format
-    std::string str2 = "keep-alive";
-    std::size_t found = requestFormatted.find(str2);
-    // std::cout << found;
-    requestFormatted.replace(found, str2.length(), "close");
-    // end format
+//    // format
+//    std::string str2 = "keep-alive";
+//    std::size_t found = requestFormatted.find(str2);
+//    // std::cout << found;
+//    requestFormatted.replace(found, str2.length(), "close");
+//    // end format
+    requestFormatted = HtmlUtils::replaceInHeader(requestFormatted, "Connection: ", "close");
+    requestFormatted = HtmlUtils::replaceInHeader(requestFormatted, "Accept-Encoding: ", "identity");
 
     send(client_socket, requestFormatted.c_str(), strlen(requestFormatted.c_str()), 0);
 
@@ -115,7 +117,7 @@ void Proxy::onGateOpened(const QString &message)
     }
 
     // close connection
-//    close(client_socket);
+    close(client_socket);
 
     // emit response received
     QString responsePayload = QString::fromUtf8(buffer.str().c_str());
@@ -128,13 +130,16 @@ void Proxy::onResponseFromServer(const QString &message)
     string server_response = message.toStdString();
     // Format request
 
+//    server_response = HtmlUtils::formatRequest(server_response, '\n', "\r\n");
     qDebug("%s", server_response.c_str());
     qDebug() << "Sending response to client \n";
 
     send(server_socket, server_response.c_str() , strlen(server_response.c_str()), 0);
-    close(server_socket);
 
     qDebug() << "response sent \n";
+
+//    shutdown(server_socket, SHUT_RDWR);
+    close(server_socket);
 }
 
 void Proxy::createClientSocket(string hostname)
