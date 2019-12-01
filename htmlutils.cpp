@@ -28,13 +28,13 @@ string HtmlUtils::extractHost(string header)
     std::smatch m;
     if (std::regex_search(header, m, r))
     {
-//                for (auto v : m)
-//                    std::cout << v << std::endl;
-                return m.str(0);
+//      for (auto v : m)
+//      std::cout << v << std::endl;
+        return m.str(0);
     }
 
-
-    qDebug() << "Erro ao encontrar host\n";
+    // qDebug() << "Erro ao encontrar host\n";
+    cout << "Erro ao encontrar host\n"
     return "";
 }
 

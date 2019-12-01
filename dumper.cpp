@@ -10,7 +10,8 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <sstream>
-#include <fstream>
+#include <iostream>
+#include <fstream> 
 #include <iostream>
 #include <regex>
 #include <set>
@@ -113,63 +114,33 @@ bool existsInVector(vector<string> v, string elem)
 
 int main(int argc, char const *argv[])
 {
-  // Socket* sock = new Socket(PORT);
-  // sock->create();
-  // sock->readRequest();
-  // sock->createClient();
-  // sock->receiveResponse();
-  // sock->sendRequest();
-
-  queue<string> hostQueue;
-  hostQueue.push("http://www.sitepx.com/");
   vector<string> accessed_links;
-  string url;
+  accessed_links.push_back("http://www.sitepx.com/");
+  accessed_links.push_back("http://www.sitepx.com/about.html");
+  accessed_links.push_back("http://www.sitepx.com/ajuda.html");
+
   string host = "www.sitepx.com";
 
-  do
-  {
-    do {  
-      url = hostQueue.front();
-      hostQueue.pop();
-    } while (existsInVector(accessed_links, url));
+  for(auto link = 0; link < accessed_links.size(); link++) {
+    size_t pos = accessed_links[link].find_last_of("/") + 1;
+    string file_name = accessed_links[link].substr(pos);
+    std::ofstream outfile (file_name);
     
+    string payload = download_html(accessed_links[link], host);
+    size_t html_tag = payload.find("<!DOCTYPE html>");
+    outfile << payload.substr(html_tag) << std::endl;
+    outfile.close();
+  }
 
-    accessed_links.push_back(url);
 
-    // Filtra todos os links que fazem sentido pra aplicacao
-    usleep(1000000);
-    string response(download_html(url, host));
-    std::regex hl_regex("<\\s*A\\s+[^>]*href\\s*=\\s*\"([^\"]*)\"", std::regex::icase);
-
-    std::set<std::string> html_links(std::sregex_token_iterator(response.begin(), response.end(), hl_regex, 1),
-      std::sregex_token_iterator());
-
-      string str;
-
-    for (auto it = html_links.begin(); it != html_links.end();)
-    {
-      // se encontrar o link com o hotname
-      if (it->find(host) != std::string::npos)
-      {
-        // Colocar todos os links dentro de um vetor
-        hostQueue.push(*it);
-        ++it;
-      }
-      else
-      {
-        it = html_links.erase(it);
-      }
-    }
-
-    std::copy(html_links.begin(),
-              html_links.end(),
-              std::ostream_iterator<std::string>(std::cout, "\n"));
-
-  } while (!hostQueue.empty());
-
-  std::copy(accessed_links.begin(),
-              accessed_links.end(),
-              std::ostream_iterator<std::string>(std::cout, "\n"));
+  
+  // intera pelo vetor de urls
+  // criar um arquivo com o nome da url
+  // Fazer download do site
+  // substituir referencias <a />
+  // escrever no arquivo o conteudo do site
+  //
+  
 
   return 0;
 }
