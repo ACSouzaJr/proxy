@@ -116,12 +116,14 @@ bool existsInVector(vector<string> v, string elem)
 // Fazer download do site
 // substituir referencias <a />
 // escrever no arquivo o conteudo do site
-void dumper(vector<string> accessed_links) {
-  string host = "www.sitepx.com";
+void dumper(vector<string> accessed_links, string host) {
 
   for(auto link = 0; link < accessed_links.size(); link++) {
     size_t pos = accessed_links[link].find_last_of("/") + 1;
     string file_name = accessed_links[link].substr(pos);
+    if(file_name.empty()){
+      file_name = "index.html";
+    }
     std::ofstream outfile (file_name);
     
     string payload = download_html(accessed_links[link], host);
@@ -160,8 +162,13 @@ vector<string> crawling_in_my_skin(string host){
 
     for (auto it = html_links.begin(); it != html_links.end();)
     {
+      
+      if(it->find("pinterest") != std::string::npos)
+      {
+        it = html_links.erase(it);
+      }
       // se encontrar o link com o hotname
-      if (it->find(host) != std::string::npos)
+      else if (it->find(host) != std::string::npos)
       {
         // Colocar todos os links dentro de um vetor
         hostQueue.push(*it);
@@ -189,5 +196,6 @@ vector<string> crawling_in_my_skin(string host){
 int main(int argc, char const *argv[])
 {
 
-
+  string host = "www.sitepx.com";
+  dumper(crawling_in_my_skin(host), host);
 }

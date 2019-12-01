@@ -124,6 +124,11 @@ int main(int argc, char const *argv[])
   for(auto link = 0; link < accessed_links.size(); link++) {
     size_t pos = accessed_links[link].find_last_of("/") + 1;
     string file_name = accessed_links[link].substr(pos);
+    
+    if(file_name.empty()){
+      file_name = "index.html";
+    }
+
     std::ofstream outfile (file_name);
     
     string payload = download_html(accessed_links[link], host);
