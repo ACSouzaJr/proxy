@@ -132,7 +132,7 @@ int main(int argc, char const *argv[])
     std::ofstream outfile (file_name);
     
     string payload = download_html(accessed_links[link], host);
-    size_t html_tag = payload.find("<!DOCTYPE html>");
+    size_t html_tag = payload.find("<!DOCTYPE html");
     outfile << payload.substr(html_tag) << std::endl;
     outfile.close();
   }
