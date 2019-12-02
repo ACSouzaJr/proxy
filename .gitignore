@@ -33,3 +33,5 @@
 
 # Vscode
 .vscode
+.DS_Store
+*.html
