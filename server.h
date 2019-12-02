@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <stdint.h>
+#include <netinet/in.h>
 #include "serverstatus.h"
 
 class Proxy : public QObject
@@ -17,15 +18,17 @@ signals:
 
 // listen
 public slots:
-    void run();
+    void createServerSocket();
     void onGateOpened(const QString &message);
     void onResponseFromServer(const QString &message);
 
 private:
     int server_socket;
     int client_socket;
+    int server_fd;
+    struct sockaddr_in address;
     uint16_t port;
-    void createServerSocket();
+    void readFromClient();
     void createClientSocket(std::string hostname);
 };
 

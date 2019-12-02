@@ -62,6 +62,7 @@ void Proxy::readFromClient()
     QString payload = QString::fromUtf8(client_request);
     //    QString string = "joaozinho gosta de azul";
     emit payloadReceived(payload, requestReceived);
+    
 }
 
 void Proxy::createServerSocket()

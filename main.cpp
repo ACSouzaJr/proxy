@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
     QObject::connect(&server, &Proxy::payloadReceived, &w, &MainWindow::onPayloadReceived);
     QObject::connect(&w, &MainWindow::gateOpened, &server, &Proxy::onGateOpened);
     QObject::connect(&w, &MainWindow::responseFromServer, &server, &Proxy::onResponseFromServer);
-    QObject::connect(&proxyServer, &QThread::started, &server, &Proxy::run);
+    QObject::connect(&proxyServer, &QThread::started, &server, &Proxy::createServerSocket);
 
     proxyServer.start();
 
