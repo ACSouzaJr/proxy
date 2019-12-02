@@ -71,7 +71,7 @@ string download_html(string url, string host)
   // printf("Successfully connected to server. Press any key to send a message\n");
   // getchar();
 
-  string request = "GET " + url + " HTTP/1.1\r\nHost:" + host + "\r\nConnection: close\r\n\r\n";
+  string request = "GET " + url + " HTTP/1.1\r\nHost: " + host + "\r\nConnection: close\r\n" + "Accept-Encoding: identity\r\n\r\n";
 
   cout << request;
   send(sock, request.c_str(), request.size(), 0);
@@ -93,22 +93,11 @@ string extractHost(string header)
     std::smatch m;
     if (std::regex_search(header, m, r))
     {
-//      for (auto v : m)
-//      std::cout << v << std::endl;
         return m.str(0);
     }
 
-    // qDebug() << "Erro ao encontrar host\n";
-    cout << "Erro ao encontrar host\n";
+//    cout << "Erro ao encontrar host\n";
     return "";
-}
-
-bool existsInVector(vector<string> v, string elem)
-{
-  if (v.empty())
-    return false;
-
-  return std::find(v.begin(), v.end(), elem) != v.end();
 }
 
 // intera pelo vetor de urls
@@ -118,35 +107,54 @@ bool existsInVector(vector<string> v, string elem)
 // escrever no arquivo o conteudo do site
 void dumper(vector<string> accessed_links, string host) {
 
+    cout << "dump started\n";
+
+  std::ofstream outfile;
+
   for(auto link = 0; link < accessed_links.size(); link++) {
-    size_t pos = accessed_links[link].find_last_of("/") + 1;
+    size_t pos = accessed_links[link].find_first_of("/", 7) + 1;
     string file_name = accessed_links[link].substr(pos);
+
     if(file_name.empty()){
       file_name = "index.html";
     }
-    std::ofstream outfile (file_name);
-    
+    cout << file_name << endl;
+
     string payload = download_html(accessed_links[link], host);
-    size_t html_tag = payload.find("<!DOCTYPE html>");
+    size_t html_tag = payload.find("<!DOCTYPE html");
+
+    outfile.open(file_name);
     outfile << payload.substr(html_tag) << std::endl;
     outfile.close();
   }
   return;
 }
 
+bool existsInVector(vector<string> v, string elem)
+{
+    if(elem.find(".jpg") != std::string::npos || elem.find(".png") != std::string::npos)
+        return true;
+    return std::find(v.begin(), v.end(), elem) != v.end();
+}
+
 vector<string> crawling_in_my_skin(string host){
   queue<string> hostQueue;
-  string root = "http://" + host + "/";
-  hostQueue.push(root);
   vector<string> accessed_links;
   string url;
 
+  string root = "http://" + host + "/";
+  hostQueue.push(root);
+
+  // Begin with a base URL that you select, and place it on the top of your queue
+  // Pop the URL at the top of the queue and download it
+  // Parse the downloaded HTML file and extract all links
+  // Insert each extracted link into the queue
+  // Goto step 2, or stop once you reach some specified limit
+
   do {
-    do {  
-      url = hostQueue.front();
-      hostQueue.pop();
-    } while (existsInVector(accessed_links, url));
-    
+
+    url = hostQueue.front();
+    hostQueue.pop();
 
     accessed_links.push_back(url);
 
@@ -156,28 +164,31 @@ vector<string> crawling_in_my_skin(string host){
     std::regex hl_regex("<\\s*A\\s+[^>]*href\\s*=\\s*\"([^\"]*)\"", std::regex::icase);
 
     std::set<std::string> html_links(std::sregex_token_iterator(response.begin(), response.end(), hl_regex, 1),
-      std::sregex_token_iterator());
+                                     std::sregex_token_iterator());
 
-      string str;
+    string str;
+
+//    std::copy(html_links.begin(),
+//              html_links.end(),
+//              std::ostream_iterator<std::string>(std::cout, "\n"));
 
     for (auto it = html_links.begin(); it != html_links.end();)
     {
-      
-      if(it->find("pinterest") != std::string::npos)
-      {
-        it = html_links.erase(it);
-      }
-      // se encontrar o link com o hotname
-      else if (it->find(host) != std::string::npos)
-      {
-        // Colocar todos os links dentro de um vetor
-        hostQueue.push(*it);
-        ++it;
-      }
-      else
-      {
-        it = html_links.erase(it);
-      }
+        if(!existsInVector(accessed_links, *it) && extractHost(*it) == host)
+        {
+            hostQueue.push(*it);
+            ++it;
+        }
+        else if(!existsInVector(accessed_links, *it) && extractHost(*it) == "")
+        {
+            hostQueue.push("http://" + host + *it);
+            cout << "host: http://" << host << *it << endl;
+            ++it;
+        }
+        else
+        {
+            it = html_links.erase(it);
+        }
     }
 
     std::copy(html_links.begin(),
@@ -186,9 +197,11 @@ vector<string> crawling_in_my_skin(string host){
 
   } while (!hostQueue.empty());
 
+  cout << "fim de operacao links acessados \n";
   std::copy(accessed_links.begin(),
               accessed_links.end(),
               std::ostream_iterator<std::string>(std::cout, "\n"));
+  cout << "end" << endl;
 
   return accessed_links;
 }
@@ -196,6 +209,6 @@ vector<string> crawling_in_my_skin(string host){
 int main(int argc, char const *argv[])
 {
 
-  string host = "www.sitepx.com";
+  string host = "samotabr.com";
   dumper(crawling_in_my_skin(host), host);
 }
