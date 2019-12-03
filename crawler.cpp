@@ -100,6 +100,15 @@ string extractHost(string header)
     return "";
 }
 
+void addExtension(string &file_name)
+{
+    // se nao encontrar a extensao adiciona
+    if(file_name.find(".html") == std::string::npos)
+    {
+        file_name.append(".html");
+    }
+}
+
 // intera pelo vetor de urls
 // criar um arquivo com o nome da url
 // Fazer download do site
@@ -118,7 +127,7 @@ void dumper(vector<string> accessed_links, string host) {
     if(file_name.empty()){
       file_name = "index.html";
     }
-    cout << file_name << endl;
+    addExtension(file_name);
 
     string payload = download_html(accessed_links[link], host);
     size_t html_tag = payload.find("<!DOCTYPE html");
@@ -133,7 +142,7 @@ void dumper(vector<string> accessed_links, string host) {
 bool existsInVector(vector<string> v, string elem)
 {
     if(elem.find(".jpg") != std::string::npos || elem.find(".png") != std::string::npos)
-      return true;        
+      return true;
 
     return std::find(v.begin(), v.end(), elem) != v.end();
 }
