@@ -1,0 +1,3 @@
+Connection Editing Mode Connecting widgets together with signals and slots
+    Connecting Objects  Making connections in Qt Designer
+    Editing Connections Changing existing connections

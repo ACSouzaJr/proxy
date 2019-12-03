@@ -19,13 +19,17 @@ SOURCES += \
     htmlutils.cpp \
     main.cpp \
     mainwindow.cpp \
-    server.cpp
+    server.cpp \
+    treeitem.cpp \
+    treemodel.cpp
 
 HEADERS += \
     htmlutils.h \
     mainwindow.h \
     server.h \
-    serverstatus.h
+    serverstatus.h \
+    treeitem.h \
+    treemodel.h
 
 FORMS += \
     mainwindow.ui
@@ -34,3 +38,6 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES += \
+    simpletreemodel.qrc
