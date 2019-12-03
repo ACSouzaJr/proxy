@@ -20,6 +20,7 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     server.cpp \
+    toolkit.cpp \
     treeitem.cpp \
     treemodel.cpp
 
@@ -28,6 +29,7 @@ HEADERS += \
     mainwindow.h \
     server.h \
     serverstatus.h \
+    toolkit.h \
     treeitem.h \
     treemodel.h
 

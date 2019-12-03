@@ -20,15 +20,19 @@ public:
 signals:
     void gateOpened(const QString &message);
     void responseFromServer(const QString &message);
+    void spiderClicked(const std::string);
 
 public slots:
     void onPayloadReceived(const QString &message, serverStatus);
+    void onHostExtracted(const std::string host);
 
 private slots:
     void on_requestButton_clicked();
     void on_responseButton_clicked();
+    void on_spiderButton_clicked();
 
 private:
     Ui::MainWindow *ui;
+    std::string host;
 };
 #endif // MAINWINDOW_H

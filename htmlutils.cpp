@@ -34,8 +34,8 @@ string HtmlUtils::extractHost(string header)
     }
 
 
-    qDebug() << "Erro ao encontrar host\n";
-    qDebug("%s", header.c_str());
+//    qDebug() << "Erro ao encontrar host\n";
+//    qDebug("%s", header.c_str());
     return "";
 }
 

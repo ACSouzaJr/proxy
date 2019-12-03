@@ -56,3 +56,17 @@ void MainWindow::on_responseButton_clicked()
 //    qDebug() << text;
     emit responseFromServer(text);
 }
+
+
+void MainWindow::on_spiderButton_clicked()
+{
+    ui->spiderButton->setEnabled(false);
+    ui->dumpButton->setEnabled(false);
+    emit spiderClicked(host);
+}
+
+void MainWindow::onHostExtracted(const std::string host)
+{
+    ui->spiderButton->setEnabled(true);
+    this->host = host;
+}

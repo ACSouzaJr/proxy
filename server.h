@@ -15,6 +15,7 @@ public:
 // emit
 signals:
     void payloadReceived(const QString &message, serverStatus);
+    void hostExtracted(const std::string host);
 
 // listen
 public slots:
