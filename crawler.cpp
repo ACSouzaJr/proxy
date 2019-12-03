@@ -133,7 +133,8 @@ void dumper(vector<string> accessed_links, string host) {
 bool existsInVector(vector<string> v, string elem)
 {
     if(elem.find(".jpg") != std::string::npos || elem.find(".png") != std::string::npos)
-        return true;
+      return true;        
+
     return std::find(v.begin(), v.end(), elem) != v.end();
 }
 
@@ -144,6 +145,7 @@ vector<string> crawling_in_my_skin(string host){
 
   string root = "http://" + host + "/";
   hostQueue.push(root);
+  accessed_links.push_back(root);
 
   // Begin with a base URL that you select, and place it on the top of your queue
   // Pop the URL at the top of the queue and download it
@@ -155,8 +157,6 @@ vector<string> crawling_in_my_skin(string host){
 
     url = hostQueue.front();
     hostQueue.pop();
-
-    accessed_links.push_back(url);
 
     // Filtra todos os links que fazem sentido pra aplicacao
     usleep(1000000);
@@ -177,11 +177,13 @@ vector<string> crawling_in_my_skin(string host){
         if(!existsInVector(accessed_links, *it) && extractHost(*it) == host)
         {
             hostQueue.push(*it);
+            accessed_links.push_back(*it);
             ++it;
         }
         else if(!existsInVector(accessed_links, *it) && extractHost(*it) == "")
         {
             hostQueue.push("http://" + host + *it);
+            accessed_links.push_back(*it);
             cout << "host: http://" << host << *it << endl;
             ++it;
         }

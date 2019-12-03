@@ -29,7 +29,7 @@ private:
     struct sockaddr_in address;
     uint16_t port;
     void readFromClient();
-    void createClientSocket(std::string hostname);
+    void createClientSocket(std::string hostname, uint16_t serverPort);
 };
 
 #endif // SERVER_H

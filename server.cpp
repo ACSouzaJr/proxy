@@ -34,6 +34,24 @@ bool is_valid_host(const string host, int server_socket)
     return host_valid;
 }
 
+uint16_t checkForPort(string request, string host){
+
+    // Nao precisava...
+    size_t pos = request.find(host + ":");
+    if( pos != std::string::npos)
+    {
+       auto port_init = pos + host.append(":").size();
+       auto port_end = request.find_first_of('/', port_init);
+       auto client_port = request.substr(port_init, port_end - port_init).c_str();
+       qDebug("Port Number: %s", request.substr(port_init, port_end - port_init).c_str());
+       return stoi(client_port);
+    }
+    else
+    {
+        return 80;
+    }
+}
+
 void Proxy::readFromClient()
 {
     int addrlen = sizeof(address);
@@ -116,7 +134,9 @@ void Proxy::onGateOpened(const QString &message)
     qDebug("\n\t%s\n", host.c_str());
 
     // connect to server
-    createClientSocket(host);
+    uint16_t clientPort = checkForPort(request, host);
+    qDebug("%d client port\n", clientPort);
+    createClientSocket(host, clientPort);
 
     // send request to server
 //    HtmlUtils::replaceInHeader(requestFormatted, "keep-alive", "close");
@@ -166,7 +186,7 @@ void Proxy::onResponseFromServer(const QString &message)
     readFromClient();
 }
 
-void Proxy::createClientSocket(string hostname)
+void Proxy::createClientSocket(string hostname, uint16_t serverPort)
 {
     struct sockaddr_in serv_addr;
     struct hostent *host_entry;    /* server host name information        */
