@@ -23,6 +23,7 @@ signals:
     void gateOpened(const QString &message);
     void responseFromServer(const QString &message);
     void spiderClicked(const std::string host);
+    void dumperClicked(const std::string host);
 
 public slots:
     void onPayloadReceived(const QString &message, serverStatus);
@@ -33,6 +34,7 @@ private slots:
     void on_requestButton_clicked();
     void on_responseButton_clicked();
     void on_spiderButton_clicked();
+    void on_dumperButton_clicked();
 
 private:
     Ui::MainWindow *ui;

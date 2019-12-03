@@ -30,6 +30,7 @@ int main(int argc, char *argv[])
     QObject::connect(server, &Proxy::hostExtracted, w, &MainWindow::onHostExtracted, Qt::QueuedConnection);
 
     QObject::connect(w, &MainWindow::spiderClicked, tools, &Toolkit::spider, Qt::QueuedConnection);
+    QObject::connect(w, &MainWindow::dumperClicked, tools, &Toolkit::recursiveClient, Qt::QueuedConnection);
 
     QObject::connect(tools, &Toolkit::newAcessedLink, w, &MainWindow::onNewAcessedLink, Qt::QueuedConnection);
 

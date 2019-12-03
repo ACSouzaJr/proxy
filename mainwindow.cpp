@@ -64,7 +64,7 @@ void MainWindow::on_responseButton_clicked()
 void MainWindow::on_spiderButton_clicked()
 {
     ui->spiderButton->setEnabled(false);
-    ui->dumpButton->setEnabled(false);
+    ui->dumperButton->setEnabled(false);
     treeWindow->show();
     emit spiderClicked(host);
 }
@@ -72,10 +72,17 @@ void MainWindow::on_spiderButton_clicked()
 void MainWindow::onHostExtracted(const std::string host)
 {
     ui->spiderButton->setEnabled(true);
+    ui->dumperButton->setEnabled(true);
     this->host = host;
 }
 
 void MainWindow::onNewAcessedLink(const QString &link)
 {
     treeWindow->insertChild(link);
+}
+
+void MainWindow::on_dumperButton_clicked()
+{
+    ui->dumperButton->setEnabled(false);
+    emit dumperClicked(host);
 }

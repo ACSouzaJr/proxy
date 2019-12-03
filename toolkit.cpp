@@ -134,6 +134,7 @@ void Toolkit::dumper(vector<string> accessed_links, string host) {
     outfile << payload.substr(html_tag) << std::endl;
     outfile.close();
   }
+  qDebug() << "dump ended\n";
   return;
 }
 
