@@ -128,7 +128,10 @@ void Proxy::onGateOpened(const QString &message)
     // Extract host
     string host = HtmlUtils::extractHost(request);
     // repassa host para ui
-    emit hostExtracted(host);
+    if(host.compare(this->host) != 0)
+    {
+       emit hostExtracted(host);
+    }
 
     // format request
     std::string requestFormatted = HtmlUtils::formatRequest(request, '\n', "\r\n");

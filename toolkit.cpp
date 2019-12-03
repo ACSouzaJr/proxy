@@ -27,7 +27,7 @@ void Toolkit::spider(const string host)
     crawler(host);
 }
 
-void Toolkit::recursiveClient(string host)
+void Toolkit::recursiveClient(const string host)
 {
     dumper(crawler(host), host);
 }
@@ -185,12 +185,14 @@ vector<string> Toolkit::crawler(string host){
         {
             hostQueue.push(*it);
             accessed_links.push_back(*it);
+            emit newAcessedLink(QString::fromUtf8(it->c_str()));
             ++it;
         }
         else if(!existsInVector(accessed_links, *it) && HtmlUtils::extractHost(*it) == "")
         {
             hostQueue.push("http://" + host + *it);
             accessed_links.push_back(*it);
+            emit newAcessedLink(QString::fromUtf8(it->c_str()));
             qDebug("host: http://%s%s \n", host.c_str(), it->c_str());
             ++it;
         }

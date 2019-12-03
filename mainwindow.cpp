@@ -7,6 +7,9 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    treeWindow = new HypertextTree();
+
+//    connect(this, &MainWindow::onNewAcessedLink, &treeWindow, &HypertextTree::insertChild);
 }
 
 MainWindow::~MainWindow()
@@ -62,6 +65,7 @@ void MainWindow::on_spiderButton_clicked()
 {
     ui->spiderButton->setEnabled(false);
     ui->dumpButton->setEnabled(false);
+    treeWindow->show();
     emit spiderClicked(host);
 }
 
@@ -69,4 +73,9 @@ void MainWindow::onHostExtracted(const std::string host)
 {
     ui->spiderButton->setEnabled(true);
     this->host = host;
+}
+
+void MainWindow::onNewAcessedLink(const QString &link)
+{
+    treeWindow->insertChild(link);
 }

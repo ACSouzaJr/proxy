@@ -12,9 +12,13 @@ class Toolkit : public QObject
 public:
     explicit Toolkit(QObject *parent = nullptr);
 
+// emit
+signals:
+    void newAcessedLink(const QString &link);
+
 // listen
 public slots:
-    void spider(const std::string host);
+    void spider(std::string host);
     void recursiveClient(const std::string host);
 
 private:

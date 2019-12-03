@@ -17,6 +17,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     htmlutils.cpp \
+    hypertexttree.cpp \
     main.cpp \
     mainwindow.cpp \
     server.cpp \
@@ -26,6 +27,7 @@ SOURCES += \
 
 HEADERS += \
     htmlutils.h \
+    hypertexttree.h \
     mainwindow.h \
     server.h \
     serverstatus.h \
@@ -34,6 +36,7 @@ HEADERS += \
     treemodel.h
 
 FORMS += \
+    hypertexttree.ui \
     mainwindow.ui
 
 # Default rules for deployment.

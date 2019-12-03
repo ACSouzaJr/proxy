@@ -28,6 +28,7 @@ private:
     int client_socket;
     int server_fd;
     struct sockaddr_in address;
+    std::string host;
     uint16_t port;
     void readFromClient();
     void createClientSocket(std::string hostname, uint16_t serverPort);

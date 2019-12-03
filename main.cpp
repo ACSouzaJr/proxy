@@ -9,31 +9,38 @@
 
 int main(int argc, char *argv[])
 {
+    Q_INIT_RESOURCE(simpletreemodel);
+
     QApplication a(argc, argv);
-    MainWindow w;
+    MainWindow *w = new MainWindow();
 
     QThread proxyServer, toolkitThread;
-    Proxy server;
-    server.moveToThread(&proxyServer);
+    Proxy *server = new Proxy();
+    server->moveToThread(&proxyServer);
 
-    Toolkit tools;
-    tools.moveToThread(&toolkitThread);
+    Toolkit *tools = new Toolkit();
+    tools->moveToThread(&toolkitThread);
 
     qRegisterMetaType<serverStatus>();
     qRegisterMetaType<std::string>();
 
-    QObject::connect(&server, &Proxy::payloadReceived, &w, &MainWindow::onPayloadReceived);
-    QObject::connect(&w, &MainWindow::gateOpened, &server, &Proxy::onGateOpened);
-    QObject::connect(&w, &MainWindow::responseFromServer, &server, &Proxy::onResponseFromServer);
-    QObject::connect(&server, &Proxy::hostExtracted, &w, &MainWindow::onHostExtracted);
+    QObject::connect(server, &Proxy::payloadReceived, w, &MainWindow::onPayloadReceived, Qt::QueuedConnection);
+    QObject::connect(w, &MainWindow::gateOpened, server, &Proxy::onGateOpened, Qt::QueuedConnection);
+    QObject::connect(w, &MainWindow::responseFromServer, server, &Proxy::onResponseFromServer, Qt::QueuedConnection);
+    QObject::connect(server, &Proxy::hostExtracted, w, &MainWindow::onHostExtracted, Qt::QueuedConnection);
 
-    QObject::connect(&w, &MainWindow::spiderClicked, &tools, &Toolkit::spider);
+    QObject::connect(w, &MainWindow::spiderClicked, tools, &Toolkit::spider, Qt::QueuedConnection);
 
-    QObject::connect(&proxyServer, &QThread::started, &server, &Proxy::createServerSocket);
+    QObject::connect(tools, &Toolkit::newAcessedLink, w, &MainWindow::onNewAcessedLink, Qt::QueuedConnection);
+
+//    QObject::connect(&proxyServer, &QThread::started, [=](){ tools->spider("samotabr.com"); });
+     QObject::connect(&proxyServer, &QThread::started, server, &Proxy::createServerSocket, Qt::QueuedConnection);
+
 
     proxyServer.start();
+    toolkitThread.start();
 
-    w.show();
+    w->show();
     return a.exec();
 }
 
