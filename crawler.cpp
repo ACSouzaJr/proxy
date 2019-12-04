@@ -136,7 +136,7 @@ void dumper(vector<string> accessed_links, string host) {
     addExtension(file_name);
 
     string payload = download_html(accessed_links[link], host);
-    replaceLinkRefereces(payload, file_name);
+    replaceLinkRefereces(payload, host);
 
     size_t html_tag = payload.find("<!DOCTYPE html");
 

@@ -111,12 +111,25 @@ void addExtension(string &file_name)
 void replaceLinkRefereces(string &payload, string host)
 {
   string h = "http://" + host;
+  // format to regex syntax
   h.replace(5,1,"\\/");
   h.replace(7,1,"\\/");
-  qDebug() << "regex: " << h.c_str();
-  string r("<\\s*A\\s+[^>]*href\\s*=\\s*\"" + h + "([^\"]*)\"");
+  string r("(<\\s*A\\s+[^>]*href\\s*=\\s*)\"" + h + "([^\"]*)\"");
+//  qDebug() << "regex: " << r.c_str();
   std::regex hl_regex(r, std::regex::icase);
-  std::regex_replace(payload, hl_regex, "$0");
+  payload = std::regex_replace(payload, hl_regex, "$1\".$2.html\"");
+
+  // / -> index.html
+  string r2("(<\\s*A\\s+[^>]*href\\s*=\\s*)\".\\/*.html\"");
+//  qDebug() << "regex: " << r.c_str();
+  std::regex h2_regex(r2, std::regex::icase);
+  payload = std::regex_replace(payload, h2_regex, "$1\"./index.html\"");
+
+  // remove reference to exit site
+  string r3("(<\\s*A\\s+[^>]*href\\s*=\\s*)\"http([^\"]*)\"");
+//  qDebug() << "regex: " << r.c_str();
+  std::regex h3_regex(r3, std::regex::icase);
+  payload = std::regex_replace(payload, h3_regex, "$1\"#\"");
 }
 
 void Toolkit::dumper(vector<string> accessed_links, string host) {
@@ -189,7 +202,7 @@ vector<string> Toolkit::crawler(string host){
     // Filtra todos os links que fazem sentido pra aplicacao
     usleep(1000000);
     string response(download_html(url.link, host));
-    std::regex hl_regex("<\\s*A\\s+[^>]*href\\s*=\\s*\"([^\"]*)\"", std::regex::icase);
+    std::regex hl_regex("<\\s*[a,A]\\s+[^>]*href\\s*=\\s*\"([^\"]*)\"", std::regex::icase);
 
     std::set<std::string> html_links(std::sregex_token_iterator(response.begin(), response.end(), hl_regex, 1),
                                      std::sregex_token_iterator());
