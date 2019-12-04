@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QTreeView" name="view">
+   <widget class="QTreeWidget" name="view">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -26,6 +26,11 @@
     <property name="editTriggers">
      <set>QAbstractItemView::NoEditTriggers</set>
     </property>
+    <column>
+     <property name="text">
+      <string/>
+     </property>
+    </column>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

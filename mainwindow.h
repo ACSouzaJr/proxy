@@ -28,7 +28,8 @@ signals:
 public slots:
     void onPayloadReceived(const QString &message, serverStatus);
     void onHostExtracted(const std::string host);
-    void onNewAcessedLink(const QString &link);
+    void onNewAcessedLink(QTreeWidgetItem *parent, QTreeWidgetItem *childItem);
+    void onAppendRoot(QTreeWidgetItem *);
 
 private slots:
     void on_requestButton_clicked();

@@ -33,8 +33,9 @@ int main(int argc, char *argv[])
     QObject::connect(w, &MainWindow::dumperClicked, tools, &Toolkit::recursiveClient, Qt::QueuedConnection);
 
     QObject::connect(tools, &Toolkit::newAcessedLink, w, &MainWindow::onNewAcessedLink, Qt::QueuedConnection);
+    QObject::connect(tools, &Toolkit::appendRoot, w, &MainWindow::onAppendRoot, Qt::QueuedConnection);
 
-//    QObject::connect(&proxyServer, &QThread::started, [=](){ tools->spider("samotabr.com"); });
+//    QObject::connect(&proxyServer, &QThread::started, [=](){ tools->recursiveClient("samotabr.com"); });
      QObject::connect(&proxyServer, &QThread::started, server, &Proxy::createServerSocket, Qt::QueuedConnection);
 
 

@@ -2,6 +2,7 @@
 #define HYPERTEXTTREE_H
 
 #include <QMainWindow>
+#include <QTreeWidget>
 
 namespace Ui {
 class HypertextTree;
@@ -14,16 +15,8 @@ class HypertextTree : public QMainWindow
 public:
     explicit HypertextTree(QWidget *parent = nullptr);
     ~HypertextTree();
-
-public slots:
-    void updateActions();
-    void insertChild(const QString &link);
-    void insertRow(const QString &link);
-
-private slots:
-    bool insertColumn();
-    bool removeColumn();
-    void removeRow();
+    void addTreeRoot(QTreeWidgetItem *rootItem);
+    void addTreeChild(QTreeWidgetItem *parent, QTreeWidgetItem *childItem);
 
 private:
     Ui::HypertextTree *ui;

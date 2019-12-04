@@ -76,9 +76,14 @@ void MainWindow::onHostExtracted(const std::string host)
     this->host = host;
 }
 
-void MainWindow::onNewAcessedLink(const QString &link)
+void MainWindow::onAppendRoot(QTreeWidgetItem *rootItem)
 {
-    treeWindow->insertChild(link);
+    treeWindow->addTreeRoot(rootItem);
+}
+
+void MainWindow::onNewAcessedLink(QTreeWidgetItem *parent, QTreeWidgetItem *childItem)
+{
+    treeWindow->addTreeChild(parent, childItem);
 }
 
 void MainWindow::on_dumperButton_clicked()

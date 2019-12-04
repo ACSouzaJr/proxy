@@ -15,6 +15,7 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <sstream>
+#include <QTreeWidgetItem>
 
 Toolkit::Toolkit(QObject *parent) : QObject(parent)
 {
@@ -107,6 +108,17 @@ void addExtension(string &file_name)
     }
 }
 
+void replaceLinkRefereces(string &payload, string host)
+{
+  string h = "http://" + host;
+  h.replace(5,1,"\\/");
+  h.replace(7,1,"\\/");
+  qDebug() << "regex: " << h.c_str();
+  string r("<\\s*A\\s+[^>]*href\\s*=\\s*\"" + h + "([^\"]*)\"");
+  std::regex hl_regex(r, std::regex::icase);
+  std::regex_replace(payload, hl_regex, "$0");
+}
+
 void Toolkit::dumper(vector<string> accessed_links, string host) {
     // intera pelo vetor de urls
     // criar um arquivo com o nome da url
@@ -128,6 +140,8 @@ void Toolkit::dumper(vector<string> accessed_links, string host) {
     addExtension(file_name);
 
     string payload = download_html(accessed_links[link], host);
+    replaceLinkRefereces(payload, host);
+
     size_t html_tag = payload.find("<!DOCTYPE html");
 
     outfile.open(file_name);
@@ -147,20 +161,26 @@ bool existsInVector(vector<string> v, string elem)
 }
 
 vector<string> Toolkit::crawler(string host){
-  queue<string> hostQueue;
+  queue<hostTree> hostQueue;
   vector<string> accessed_links;
-  string url;
+  hostTree url;
 
   string root = "http://" + host + "/";
-  hostQueue.push(root);
   accessed_links.push_back(root);
+
+  QTreeWidgetItem *rootItem = new QTreeWidgetItem();
+
+  rootItem->setText(0, QString(root.c_str()));
+  emit appendRoot(rootItem);
+  hostTree rootNode = {.link = root, .parent = nullptr, .linkRef = rootItem};
+  hostQueue.push(rootNode);
 
   // Begin with a base URL that you select, and place it on the top of your queue
   // Pop the URL at the top of the queue and download it
   // Parse the downloaded HTML file and extract all links
   // Insert each extracted link into the queue
   // Goto step 2, or stop once you reach some specified limit
-
+    hostTree childNode;
   do {
 
     url = hostQueue.front();
@@ -168,7 +188,7 @@ vector<string> Toolkit::crawler(string host){
 
     // Filtra todos os links que fazem sentido pra aplicacao
     usleep(1000000);
-    string response(download_html(url, host));
+    string response(download_html(url.link, host));
     std::regex hl_regex("<\\s*A\\s+[^>]*href\\s*=\\s*\"([^\"]*)\"", std::regex::icase);
 
     std::set<std::string> html_links(std::sregex_token_iterator(response.begin(), response.end(), hl_regex, 1),
@@ -184,16 +204,32 @@ vector<string> Toolkit::crawler(string host){
     {
         if(!existsInVector(accessed_links, *it) && HtmlUtils::extractHost(*it) == host)
         {
-            hostQueue.push(*it);
+            QTreeWidgetItem *childItem = new QTreeWidgetItem();
+            childItem->setText(0, QString(it->c_str()));
+
+            childNode.link = *it;
+            childNode.parent = url.linkRef;
+            childNode.linkRef = childItem;
+
+            hostQueue.push(childNode);
             accessed_links.push_back(*it);
-            emit newAcessedLink(QString::fromUtf8(it->c_str()));
+
+            emit newAcessedLink(url.linkRef,childItem);
+
             ++it;
         }
         else if(!existsInVector(accessed_links, *it) && HtmlUtils::extractHost(*it) == "")
         {
-            hostQueue.push("http://" + host + *it);
+            QTreeWidgetItem *childItem = new QTreeWidgetItem();
+            childItem->setText(0, QString(it->c_str()));
+
+            childNode.link = "http://" + host + *it;
+            childNode.parent = url.linkRef;
+            childNode.linkRef = childItem;
+
+            hostQueue.push(childNode);
             accessed_links.push_back(*it);
-            emit newAcessedLink(QString::fromUtf8(it->c_str()));
+
             qDebug("host: http://%s%s \n", host.c_str(), it->c_str());
             ++it;
         }

@@ -109,6 +109,12 @@ void addExtension(string &file_name)
     }
 }
 
+void replaceLinkRefereces(string &payload, string filename)
+{
+  string r("<\\s*A\\s+[^>]*href\\s*=\\s*\"(" + payload + "[^\"]*)\"");
+  std::regex hl_regex(r, std::regex::icase);
+  std::regex_replace(payload, hl_regex, "$0");
+}
 // intera pelo vetor de urls
 // criar um arquivo com o nome da url
 // Fazer download do site
@@ -130,6 +136,8 @@ void dumper(vector<string> accessed_links, string host) {
     addExtension(file_name);
 
     string payload = download_html(accessed_links[link], host);
+    replaceLinkRefereces(payload, file_name);
+
     size_t html_tag = payload.find("<!DOCTYPE html");
 
     outfile.open(file_name);

@@ -4,17 +4,26 @@
 #include <vector>
 #include <string>
 #include <QObject>
+#include <QTreeWidgetItem>
+#include <string>
 
 class Toolkit : public QObject
 {
     Q_OBJECT
+
+    struct hostTree {
+        std::string link;
+        QTreeWidgetItem *parent;
+        QTreeWidgetItem *linkRef;
+    };
 
 public:
     explicit Toolkit(QObject *parent = nullptr);
 
 // emit
 signals:
-    void newAcessedLink(const QString &link);
+    void newAcessedLink(QTreeWidgetItem *parent, QTreeWidgetItem *childItem);
+    void appendRoot(QTreeWidgetItem *);
 
 // listen
 public slots:
