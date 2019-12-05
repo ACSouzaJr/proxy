@@ -16,6 +16,7 @@
 #include <netdb.h>
 #include <sstream>
 #include <QTreeWidgetItem>
+#include <QDir>
 
 Toolkit::Toolkit(QObject *parent) : QObject(parent)
 {
@@ -132,6 +133,17 @@ void replaceLinkRefereces(string &payload, string host)
   payload = std::regex_replace(payload, h3_regex, "$1\"#\"");
 }
 
+void createPath(string hostPath){
+
+    QString path(hostPath.c_str());
+    QDir dir; // Initialize to the desired dir if 'path' is relative
+              // By default the program's working directory "." is used.
+
+    // We create the directory if needed
+    if (!dir.exists(path))
+        dir.mkpath(path); // You can check the success if needed
+}
+
 void Toolkit::dumper(vector<string> accessed_links, string host) {
     // intera pelo vetor de urls
     // criar um arquivo com o nome da url
@@ -144,6 +156,7 @@ void Toolkit::dumper(vector<string> accessed_links, string host) {
   std::ofstream outfile;
 
   for(auto link = 0; link < accessed_links.size(); link++) {
+    size_t pos_end = accessed_links[link].find_last_of("/");
     size_t pos = accessed_links[link].find_first_of("/", 7) + 1;
     string file_name = accessed_links[link].substr(pos);
 
@@ -151,6 +164,12 @@ void Toolkit::dumper(vector<string> accessed_links, string host) {
       file_name = "index.html";
     }
     addExtension(file_name);
+    if(!file_name.empty() && pos != (pos_end + 1) && pos != std::string::npos+1)
+    {
+//        if(accessed_links[link].substr(pos, pos_end).find("http")) break;
+        qDebug("%s\n", accessed_links[link].substr(pos, pos_end-pos).c_str());
+        createPath(accessed_links[link].substr(pos, pos_end-pos));
+    }
 
     string payload = download_html(accessed_links[link], host);
     replaceLinkRefereces(payload, host);
