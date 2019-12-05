@@ -18,14 +18,15 @@ Proxy::Proxy(uint16_t port, QObject *parent) : QObject(parent)
     this->port = port;
 }
 
-bool is_valid_host(const string host, int server_socket)
+bool is_valid_host(const string host, int server_socket, int valread)
 {
     bool host_valid = true;
     if (host == "detectportal.firefox.com" ||
             host == "g.symcd.com" ||
             host == "sr.symcd.com" ||
             host == "ocsp.digicert.com" ||
-            host == "ocsp.pki.goog")
+            host == "ocsp.pki.goog"||
+            valread < 10)
     {
         host_valid = false;
         close(server_socket);
@@ -80,7 +81,7 @@ void Proxy::readFromClient()
 
         qDebug() << client_request;
 
-    }while (!is_valid_host(HtmlUtils::extractHost(client_request), server_socket));
+    }while (!is_valid_host(HtmlUtils::extractHost(client_request), server_socket, valread));
 
     QString payload = QString::fromUtf8(client_request);
     //    QString string = "joaozinho gosta de azul";
@@ -191,7 +192,7 @@ void Proxy::onResponseFromServer(const QString &message)
 
     qDebug() << "response sent \n";
 
-    shutdown(server_socket, SHUT_RDWR);
+//    shutdown(server_socket, SHUT_RDWR);
     close(server_socket);
     readFromClient();
 }
@@ -211,7 +212,7 @@ void Proxy::createClientSocket(string hostname, uint16_t serverPort)
         memset(&serv_addr, '0', sizeof(serv_addr));
 
         serv_addr.sin_family = AF_INET;
-        serv_addr.sin_port = htons(80);
+        serv_addr.sin_port = htons(serverPort);
 
         host_entry = gethostbyname(hostname.c_str());
         if (host_entry == (struct hostent *) 0)

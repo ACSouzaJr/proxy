@@ -11,30 +11,29 @@
 
 int main(int argc, char *argv[])
 {
-//    uint16_t port;
-//    std::string flag;
+    uint16_t port;
+    std::string flag;
 
-//    if (argc == 1)
-//    {
-//        port = 8228;
-//    }
-//    else if (argc == 3)
-//    {
-//        flag = argv[1];
-//        if (flag.compare("-p") != 0)
-//        {
-//            std::cout << "Argumento " << argv[1] << " invalido! " << std::endl;
-//            std::cout << "Execucao deve ter formato ./aracne OU ./aracne -p <numero da porta>" << std::endl;
-//            return 0;
-//        }
-//        port = std::stoi(argv[2]);
-//    }
+    if (argc == 1)
+    {
+        port = 8228;
+    }
+    else if (argc == 3)
+    {
+        flag = argv[1];
+        if (flag.compare("-p") != 0)
+        {
+            std::cout << "Argumento " << argv[1] << " invalido! " << std::endl;
+            return 0;
+        }
+        port = std::stoi(argv[2]);
+    }
 
     QApplication a(argc, argv);
     MainWindow w;
 
     QThread proxyServer, toolkitThread;
-    Proxy server;
+    Proxy server(port);
     server.moveToThread(&proxyServer);
 
     Toolkit tools;
