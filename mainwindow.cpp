@@ -26,6 +26,7 @@ void MainWindow::on_requestButton_clicked()
     ui->requestButton->setEnabled(false);
     ui->clientRequest->setEnabled(false);
     QString text =  ui->clientRequest->toPlainText();
+//    ui->clientRequest->clear();
 
     qDebug() << text;
     emit gateOpened(text);
@@ -55,6 +56,7 @@ void MainWindow::on_responseButton_clicked()
     ui->responseButton->setEnabled(false);
     ui->serverResponse->setEnabled(false);
     QString text =  ui->serverResponse->toPlainText();
+//    ui->serverResponse->clear();
 
 //    qDebug() << text;
     emit responseFromServer(text);

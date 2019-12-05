@@ -13,7 +13,7 @@
 #include <sstream>
 #include "serverstatus.h"
 
-Proxy::Proxy(QObject *parent, uint16_t port) : QObject(parent)
+Proxy::Proxy(uint16_t port, QObject *parent) : QObject(parent)
 {
     this->port = port;
 }
@@ -72,7 +72,12 @@ void Proxy::readFromClient()
         qDebug() << "Server accepted connection\n";
         qDebug() << "Reading message from client\n";
 
-        valread = read(server_socket, client_request, sizeof(client_request)); //Blocked until message is sent from the client
+        if((valread = read(server_socket, client_request, sizeof(client_request))) < 0) //Blocked until message is sent from the client
+        {
+            perror("Error reading from client \n");
+            exit(EXIT_FAILURE);
+        }
+
         qDebug() << client_request;
 
     }while (!is_valid_host(HtmlUtils::extractHost(client_request), server_socket));

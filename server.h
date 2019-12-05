@@ -10,7 +10,7 @@ class Proxy : public QObject
 {
     Q_OBJECT
 public:
-    explicit Proxy(QObject *parent = nullptr, uint16_t port = 8228);
+    explicit Proxy(uint16_t port = 8228, QObject *parent = nullptr);
 
 // emit
 signals:
